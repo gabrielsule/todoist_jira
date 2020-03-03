@@ -5,9 +5,12 @@ const path = require('path');
 const moment = require('moment');
 const notifier = require('node-notifier');
 
+
 getTask();
 
 async function getTask() {
+    let lastRun = readDate();
+
     const header = {
         headers: {
             'Content-Type': 'application/json',
@@ -18,18 +21,23 @@ async function getTask() {
         },
     }
 
-    await axios.get(`${config.jira.url}${config.jira.query}`, header)
+    await axios.get(`${config.jira.url}${config.jira.query1}${lastRun}${config.jira.query2}`, header)
         .then(response => {
-            let key = response.data.issues[0].key;
-            let due = moment(response.data.issues[0].fields.created).format('YYYY/MM/DD').toString();
-            let summary = response.data.issues[0].fields.summary;
-            let displayName = response.data.issues[0].fields.creator.displayName;
-            let content = key + ' ' + displayName + ' ' + summary;
+            if (response.data.total !== 0) {
 
-            addTask(content, due)
+                let key = response.data.issues[0].key;
+                let due = moment(response.data.issues[0].fields.created).format('YYYY/MM/DD').toString();
+                let summary = response.data.issues[0].fields.summary;
+                let displayName = response.data.issues[0].fields.creator.displayName;
+                let content = key + ' ' + displayName + ' ' + summary;
+
+                addTask(content, due)
+            } else {
+                notify('no hay tareas para procesar');
+            }
         })
         .catch(error => {
-            console.log('ERROR', error.response);
+            notify('no se pudo obtener la tarea');
         });
 }
 
@@ -80,7 +88,7 @@ function readDate() {
 
 function saveDate() {
     let body = {
-        "date": moment().format('DD/MM/YYYY hh:mm:ss')
+        "date": moment().format('YYYY/MM/DD hh:mm')
     }
 
     fs.writeFile('lastrun.json', JSON.stringify(body), (err) => {
