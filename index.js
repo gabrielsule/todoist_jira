@@ -24,14 +24,15 @@ async function getTask() {
     await axios.get(`${config.jira.url}${config.jira.query1}${lastRun}${config.jira.query2}`, header)
         .then(response => {
             if (response.data.total !== 0) {
+                for (let i = 0; i <= response.data.total - 1; i++) {
+                    let key = response.data.issues[i].key;
+                    let due = moment(response.data.issues[i].fields.created).format('YYYY/MM/DD').toString();
+                    let summary = response.data.issues[i].fields.summary;
+                    let displayName = response.data.issues[i].fields.creator.displayName;
+                    let content = key + ' ' + displayName + ' ' + summary;
 
-                let key = response.data.issues[0].key;
-                let due = moment(response.data.issues[0].fields.created).format('YYYY/MM/DD').toString();
-                let summary = response.data.issues[0].fields.summary;
-                let displayName = response.data.issues[0].fields.creator.displayName;
-                let content = key + ' ' + displayName + ' ' + summary;
-
-                addTask(content, due)
+                    addTask(content, due)
+                }
             } else {
                 notify('no hay tareas para procesar');
             }
@@ -40,7 +41,6 @@ async function getTask() {
             notify('no se pudo obtener la tarea');
         });
 }
-
 
 async function addTask(content, due) {
 
