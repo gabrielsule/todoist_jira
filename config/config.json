@@ -7,6 +7,7 @@
         "url": "https://server.atlassian.net/rest/api/3/",
         "user": "usuario@server.com",
         "token": "jira_token",
-        "query": "search?jql=project+%3D+PROYECTO+AND+status+%3D+Open+AND+assignee=USUARIO%20ORDER+BY+created+DESC"
+        "query1": "search?jql=project+%3D+DESA+AND+status+%3D+Open+AND%20created%3E='",
+        "query2": "'+AND+assignee=gabriel.s%20ORDER+BY+created+DESC"
     }
 }
