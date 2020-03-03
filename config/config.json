@@ -1,0 +1,12 @@
+{
+    "todo": {
+        "url": "https://api.todoist.com/rest/v1/",
+        "token": "todoist_token"
+    },
+    "jira": {
+        "url": "https://server.atlassian.net/rest/api/3/",
+        "user": "usuario@server.com",
+        "token": "jira_token",
+        "query": "search?jql=project+%3D+PROYECTO+AND+status+%3D+Open+AND+assignee=USUARIO%20ORDER+BY+created+DESC"
+    }
+}
